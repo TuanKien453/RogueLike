@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4bdaef74ef17a448a6aa19deccd93c5, type: 3}
+  m_Name: IncreaseHealthEffect
+  m_EditorClassIdentifier: 
+  Id: 2f4a272b-bed1-4286-ba6a-55706a4bb2d1
+  EffectName: dsf
+  IsDebuff: 0
+  Duration: 5
+  Priority: 0
+  MaxStack: 2
+  healthToIncrease: 100
