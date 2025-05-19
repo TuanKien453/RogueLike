@@ -4,21 +4,23 @@ using System.Collections.Generic;
 
 public class ParticleLightAttacher : MonoBehaviour
 {
-    public ParticleSystem particleSystem;
-    public GameObject light2DPrefab;
+    [SerializeField]
+    private ParticleSystem particle;
+    [SerializeField]
+    private GameObject light2DPrefab;
 
     private ParticleSystem.Particle[] particles;
     private Dictionary<uint, GameObject> particleLights = new Dictionary<uint, GameObject>();
 
     void LateUpdate()
     {
-        if (particleSystem == null || light2DPrefab == null) return;
+        if (particle == null || light2DPrefab == null) return;
 
-        int maxParticles = particleSystem.main.maxParticles;
+        int maxParticles = particle.main.maxParticles;
         if (particles == null || particles.Length < maxParticles)
             particles = new ParticleSystem.Particle[maxParticles];
 
-        int count = particleSystem.GetParticles(particles);
+        int count = particle.GetParticles(particles);
 
         var activeIDs = new HashSet<uint>();
 
@@ -29,13 +31,13 @@ public class ParticleLightAttacher : MonoBehaviour
 
             if (!particleLights.ContainsKey(randomSeed))
             {
-                Vector3 worldPos = particleSystem.transform.TransformPoint(particles[i].position);
+                Vector3 worldPos = particle.transform.TransformPoint(particles[i].position);
                 GameObject lightInstance = Instantiate(light2DPrefab, worldPos, Quaternion.identity, transform);
                 particleLights[randomSeed] = lightInstance;
             }
             else
             {
-                particleLights[randomSeed].transform.position = particleSystem.transform.TransformPoint(particles[i].position);
+                particleLights[randomSeed].transform.position = particle.transform.TransformPoint(particles[i].position);
             }
         }
 

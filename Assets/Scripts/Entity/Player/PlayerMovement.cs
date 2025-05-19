@@ -3,56 +3,100 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using static UnityEngine.UI.Image;
-
+[RequireComponent(typeof(Rigidbody2D),typeof(StatsComponent))]
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField]
+    private Transform groundCheck;
+
+    [SerializeField]
+    private float groundCheckRadius = 0.1f;
+
+    [SerializeField]
+    private LayerMask groundLayer;
+    [SerializeField]
+    private Transform visualRoot;
+
+    private SpriteRenderer spriteRenderer;
+
+    private bool isGrounded;
     private Rigidbody2D rb;
-    [SerializeField]
+    private float moveInput;
+    private StatsComponent stats;
+
     private float speed;
-    [SerializeField]
-    private GameObject weapon;
-    [SerializeField]
-    private InputManager inputManager;
+    private float jumpForce;
+    public bool isFacingRight = true;
     void Start()
     {
-        rb = gameObject.GetComponent<Rigidbody2D>();
-        
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        rb = GetComponent<Rigidbody2D>();
+        stats = GetComponent<StatsComponent>();
     }
 
     void Update()
     {
-       
-
+        UpdateStats();
+        CheckGroundAndJump();
     }
-
     private void FixedUpdate()
     {
-
-        Move();
-        UpdateWeapon();
+        HandleMovementInput();
+    }
+    private void UpdateStats()
+    {
+        speed = stats.GetStats(StatType.MoveSpeed);
+        jumpForce = stats.GetStats(StatType.JumpForce);
     }
 
-    private void UpdateWeapon()
+    private void HandleMovementInput()
     {
-        Vector3 mouseWorldPos = inputManager.GetMouseWorldPosition();
-        mouseWorldPos.z = 0f;
-        Vector2 direction = mouseWorldPos - weapon.transform.position;
-        float angleRad = Mathf.Atan2(direction.y, direction.x);
-        float angleDeg = angleRad * Mathf.Rad2Deg;
-        weapon.transform.rotation = Quaternion.Euler(0, 0, angleDeg);
+        moveInput = InputManager.Instance.GetInputX();
+        rb.velocity = new Vector2(moveInput*speed, rb.velocity.y);
+        if (moveInput < 0 && isFacingRight)
+        {
+            FacingLeft();
+        }
+        else if (moveInput > 0 && !isFacingRight)
+        {
+            FacingRight();
+        }
     }
 
-    private void Move()
+    private void CheckGroundAndJump()
     {
-        rb.velocity = new Vector2(inputManager.GetInputX() * speed, rb.velocity.y);
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+
+        if (isGrounded && InputManager.Instance.ISPressJump())
+        {
+            Jump();
+        }
+    }
+
+    private void Jump()
+    {
+        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
     }
 
     private void FacingLeft()
     {
-        transform.rotation = Quaternion.Euler(0, 180, 0);
+        isFacingRight = false;
+        spriteRenderer.flipX = true;
+        visualRoot.transform.localScale = new Vector3(-1,1,1);
     }
+
     private void FacingRight()
     {
-        transform.rotation = Quaternion.Euler(0, 0, 0);
+        isFacingRight = true;
+        spriteRenderer.flipX = false;
+        visualRoot.transform.localScale = new Vector3(1, 1, 1);
+    }
+    private void OnDrawGizmosSelected()
+    {
+        if (groundCheck != null)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+        }
     }
 }

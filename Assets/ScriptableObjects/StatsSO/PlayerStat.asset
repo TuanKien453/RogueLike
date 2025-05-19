@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: PlayerStat
   m_EditorClassIdentifier: 
   Damage: 10
-  MoveSpeed: 5
+  MoveSpeed: 10
   MaxHealth: 100
   Defense: 10
+  JumpForce: 15
