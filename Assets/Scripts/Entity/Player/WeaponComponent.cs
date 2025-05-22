@@ -67,7 +67,9 @@ public class WeaponComponent : MonoBehaviour
         {
             weapon.EnableItemDrop();
             weapon.transform.SetParent(null);
+            weapon.transform.rotation = Quaternion.identity;
             weapon.IsPickedUp = false;
+            weapon.transform.localScale = weapon.OriginalLocalScale;
             inventory[currentSlot] = null;
         }
     }
