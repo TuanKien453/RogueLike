@@ -49,4 +49,9 @@ public class InputManager : MonoBehaviour
         mousePos.z = 10f;
         return Camera.main.ScreenToWorldPoint(mousePos);
     }
+
+    public bool IsPressEscape()
+    {
+        return Input.GetKeyDown(KeyCode.Escape);
+    }
 }
